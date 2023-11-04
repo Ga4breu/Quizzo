@@ -61,7 +61,7 @@ const handleAnswer = (answer, questionId) => {
       // Update score, set quiz as completed, and show the modal
       setScore(newScore);
       setCompleted(true); // this was missing
-      setShowModal(true);
+      console.log(completed);
     }
 
     return updatedAnswers;
