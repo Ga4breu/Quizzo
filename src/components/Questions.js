@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import seedrandom from 'seedrandom'; // You'll need to install the seedrandom package
-import questionsData from './questionsdata'; // Ensure this path is correct
-import Modal from './Modal'; // Update with the correct path to your Modal component
+import seedrandom from 'seedrandom';
+import questionsData from './questionsdata';
+import questoesData from './questoesdata';
+import Modal from './Modal';
 
-function Questions() {
+function Questions({ language }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
@@ -11,45 +12,41 @@ function Questions() {
   const [randomQuestions, setRandomQuestions] = useState([]);
 
   useEffect(() => {
-    // Generate a seed based on the current date
     const today = new Date();
     const seed = today.getFullYear().toString() + (today.getMonth() + 1).toString() + today.getDate().toString();
-
-    // Seed the random number generator
     const rng = seedrandom(seed);
-    
-    // Custom shuffle function that uses the seeded RNG
+
     function seededShuffle(array) {
       let currentIndex = array.length, temporaryValue, randomIndex;
-
-      // While there remain elements to shuffle...
       while (0 !== currentIndex) {
-
-        // Pick a remaining element...
         randomIndex = Math.floor(rng() * currentIndex);
         currentIndex -= 1;
-
-        // And swap it with the current element.
         temporaryValue = array[currentIndex];
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
       }
-
       return array;
     }
 
-    // Shuffle the questions array with the seeded RNG and take the first 5 questions
-    setRandomQuestions(seededShuffle([...questionsData]).slice(0, 5));
-  }, []);
+    // Use a single questions array, regardless of language
+    const combinedQuestions = questionsData.map((q) => {
+      const translation = questoesData.find((qt) => qt.id === q.id);
+      return {
+        ...q,
+        title: language === 'en' ? q.title : translation.title,
+        answers: language === 'en' ? q.answers : translation.answers,
+      };
+    });
+
+    setRandomQuestions(seededShuffle(combinedQuestions).slice(0, 5));
+    setSelectedAnswers({});
+    setScore(0);
+
+  }, [language]);
 
   const handleAnswer = (answer, questionId) => {
     setSelectedAnswers((prevSelectedAnswers) => {
-      const updatedAnswers = {
-        ...prevSelectedAnswers,
-        [questionId]: answer
-      };
-  
-      // Check if all questions have been answered
+      const updatedAnswers = { ...prevSelectedAnswers, [questionId]: answer };
       if (Object.keys(updatedAnswers).length === randomQuestions.length) {
         let newScore = 0;
         randomQuestions.forEach((question) => {
@@ -57,14 +54,10 @@ function Questions() {
             newScore += 1;
           }
         });
-  
-        // Update score, set quiz as completed, and show the modal
         setScore(newScore);
-        setCompleted(true); // this was missing
-        setShowModal(true); // Add this line to show the modal
-        console.log(completed)
+        setCompleted(true);
+        setShowModal(true);
       }
-  
       return updatedAnswers;
     });
   };
@@ -89,7 +82,6 @@ function Questions() {
                 } else {
                   buttonClasses += ' bg-blue-500 hover:bg-blue-700';
                 }
-
                 return (
                   <button
                     key={answer.id}
@@ -106,7 +98,12 @@ function Questions() {
         ))}
       </div>
       {showModal && (
-        <Modal score={score} total={randomQuestions.length} onClose={handleCloseModal} />
+        <Modal
+          score={score}
+          total={randomQuestions.length}
+          onClose={handleCloseModal}
+          language={language}
+        />
       )}
     </div>
   );
