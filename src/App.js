@@ -35,8 +35,9 @@ function App() {
   return (
     <div className="App min-h-screen flex flex-col">
       <header className="w-[80%] mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-6 rounded-b-3xl">
-  <h1 className="text-3xl font-bold text-white text-center">Welcome to Quizzo!</h1>
-        <div className="text-center text-white mt-4 font-bold">
+      <h1 className="text-3xl font-bold text-white text-center">Welcome to Quizzo!</h1>
+      <p className="text-sm font-bold text-white text-center mt-4">The questions will be reset in:</p>
+        <div className="text-center text-white font-bold">
           {Object.keys(timeLeft).length ? (
             Object.keys(timeLeft).map((interval, i) => (
               <span key={i}>

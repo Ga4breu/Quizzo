@@ -5,6 +5,7 @@ const Modal = ({ score, total, onClose }) => {
           <div className="text-center">
             <h2 className="text-xl font-bold mb-4">Quiz Completed!</h2>
             <p className="mb-8">Your score: {score} out of {total}</p>
+            <p className="mb-8">That's all folks!</p>
           </div>
           <div className="items-center px-4 py-3">
             <button

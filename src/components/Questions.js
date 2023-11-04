@@ -42,31 +42,32 @@ function Questions() {
     setRandomQuestions(seededShuffle([...questionsData]).slice(0, 5));
   }, []);
 
-const handleAnswer = (answer, questionId) => {
-  setSelectedAnswers((prevSelectedAnswers) => {
-    const updatedAnswers = {
-      ...prevSelectedAnswers,
-      [questionId]: answer
-    };
-
-    // Check if all questions have been answered
-    if (Object.keys(updatedAnswers).length === randomQuestions.length) {
-      let newScore = 0;
-      randomQuestions.forEach((question) => {
-        if (updatedAnswers[question.id]?.isCorrect) {
-          newScore += 1;
-        }
-      });
-
-      // Update score, set quiz as completed, and show the modal
-      setScore(newScore);
-      setCompleted(true); // this was missing
-      console.log(completed);
-    }
-
-    return updatedAnswers;
-  });
-};
+  const handleAnswer = (answer, questionId) => {
+    setSelectedAnswers((prevSelectedAnswers) => {
+      const updatedAnswers = {
+        ...prevSelectedAnswers,
+        [questionId]: answer
+      };
+  
+      // Check if all questions have been answered
+      if (Object.keys(updatedAnswers).length === randomQuestions.length) {
+        let newScore = 0;
+        randomQuestions.forEach((question) => {
+          if (updatedAnswers[question.id]?.isCorrect) {
+            newScore += 1;
+          }
+        });
+  
+        // Update score, set quiz as completed, and show the modal
+        setScore(newScore);
+        setCompleted(true); // this was missing
+        setShowModal(true); // Add this line to show the modal
+        console.log(completed)
+      }
+  
+      return updatedAnswers;
+    });
+  };
 
   const handleCloseModal = () => {
     setShowModal(false);
