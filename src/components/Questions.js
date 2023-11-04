@@ -57,6 +57,7 @@ function Questions({ language }) {
         setScore(newScore);
         setCompleted(true);
         setShowModal(true);
+        console.log(completed)
       }
       return updatedAnswers;
     });
